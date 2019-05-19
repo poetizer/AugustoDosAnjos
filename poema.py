@@ -7,7 +7,7 @@ textgen = textgenrnn(weigths)
 
 # Descomente para treinar um novo modelo, ou melhorar.
 #
-# textgen.train_from_file('input.txt', num_epochs=100)
+# textgen.train_from_file('Eu/eu - augusto dos anjos.txt', num_epochs=100)
 # textgen.save(weigths)
 
 
