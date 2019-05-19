@@ -3,11 +3,13 @@ import jamspell
 
 weigths = 'augusto-dos-anjos.hdf5'
 
-textgen = textgenrnn(weigths)
+textgen = textgenrnn()
+textgen.load(weigths)
 
 # Descomente para treinar um novo modelo, ou melhorar.
 #
-# textgen.train_from_file('input.txt', num_epochs=100)
+# textgen.train_from_file(
+#     'dataset/eu - augusto dos anjos.txt', num_epochs=100, gen_epochs=10)
 # textgen.save(weigths)
 
 
@@ -17,7 +19,7 @@ def gen(temp):
 
 corrector = jamspell.TSpellCorrector()
 corrector.LoadLangModel(
-    'drummond-dos-anjos.bin')
+    'drummond-dos-anjos-v2.bin')
 
 gen = gen(1.0)
 poema = []
@@ -27,4 +29,6 @@ for verso in gen:
 
     poema.append(novo_verso)
 
+print('\n'.join(gen))
+print('===================')
 print('\n'.join(poema))
