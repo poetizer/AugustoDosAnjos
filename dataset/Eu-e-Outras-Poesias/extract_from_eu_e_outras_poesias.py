@@ -18,6 +18,14 @@ def isTitle(term):
     return isTitle
 
 
+def removeExtraNewLine(poemasStr):
+    novoPoemasStr = []
+    for i in range(len(poemasStr)-1):
+        if not (poemasStr[i] == '' and poemasStr[i+1] != ''):
+            novoPoemasStr.append(poemasStr[i])
+    return novoPoemasStr
+
+
 # Abre o .epub e extrai as seções colocando tudo em um array de linhas.
 for item in book.get_items():
     if item.get_type() == ebooklib.ITEM_DOCUMENT:
@@ -32,46 +40,38 @@ for item in book.get_items():
                 pass
         count += 1
 
-p = {'Trancrição de Poemas': []}
+mapaDePoemas = {'Trancrição de Poemas': []}
 
-poemaDaVez = 'Trancrição de Poemas'
-c = 0
+tituloDaVez = 'Trancrição de Poemas'
+conflict = 0
 
-for verso in poemas:
-    if isTitle(verso):
-        if not verso in p.keys():
-            poemaDaVez = verso
-        else:
-            poemaDaVez = verso + "_" + str(c)
-            c += 1
-        p[poemaDaVez] = []
+for linha in poemas:
+    if isTitle(linha):
+        if not linha in mapaDePoemas.keys():
+            tituloDaVez = linha
+        else:  # titulo já existe
+            tituloDaVez = linha + "_" + str(conflict)
+            conflict += 1
+        mapaDePoemas[tituloDaVez] = []
     else:
-        p[poemaDaVez].append(verso)
+        mapaDePoemas[tituloDaVez].append(linha)
 
-# Processo de remoção de linhas duplas
-# Talvez melhorar?
+# Remoção da flag de conflito
 poemas_str = []
-for titulo in p.keys():
-    poema = [titulo.split('_')[0]] + p[titulo]
+for titulo in mapaDePoemas.keys():
+    poema = [titulo.split('_')[0]] + mapaDePoemas[titulo]
     poemas_str += poema
 
-poemas_str2 = []
-for i in range(len(poemas_str)-1):
-    if not (poemas_str[i] == '' and poemas_str[i+1] != ''):
-        poemas_str2.append(poemas_str[i])
+# Processo de remoção de linhas duplas
+poemasSemiClean = removeExtraNewLine(removeExtraNewLine(poemas_str))
 
-poemas_str3 = []
-for i in range(len(poemas_str2)-1):
-    if not (poemas_str2[i] == '' and poemas_str2[i+1] != ''):
-        poemas_str3.append(poemas_str2[i])
-
-poemas_str4 = []
-for i in range(len(poemas_str3)-1):
-    if not (poemas_str3[i] == '' and poemas_str3[i+1] == ''):
-        poemas_str4.append(poemas_str3[i])
+poemasClean = []
+for i in range(len(poemasSemiClean)-1):
+    if not (poemasSemiClean[i] == '' and poemasSemiClean[i+1] == ''):
+        poemasClean.append(poemasSemiClean[i])
 # Remoção concluída
 
 
 file = open('Eu e Outras Poesias - Augustos dos Anjos.txt', 'w')
 
-file.write('\n'.join(poemas_str4))
+file.write('\n'.join(poemasClean))
